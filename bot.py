@@ -11,35 +11,39 @@ bot = commands.Bot(command_prefix="a.", intents=intents)
 alphabets = list("abcdefghijklmnopqrstuvwxyz")
 chars = []
 
+channel_names = ['alphabets', 'alphabet', 'counting', '🅰counting', '🅰alphabet', '🅰alphabets']
+
 @bot.event
 async def on_ready():
     print(f"logged in as {bot.user}")
 
 @bot.event
 async def on_message(ctx):
-    global chars
 
-    char = str(ctx.content).lower()
+    if str(ctx.channel.name) in channel_names:
+        global chars
 
-    if len(char) == 1 and char in alphabets:
-        chars.append(char)
+        char = str(ctx.content).lower()
 
-        if char[len(char)-1] == alphabets[len(chars)-1]:
-            await ctx.add_reaction("✅")
+        if len(char) == 1 and char in alphabets:
+            chars.append(char)
 
-
-        if len(chars) == 26 and chars[len(chars)-1] == "z":
-            await ctx.add_reaction("💯")
-            await ctx.channel.send(f"Noice !! {ctx.author.mention} Reached The End, There Are No More Letters. Start Again with **a**")
-            chars = []
-
-        elif chars[len(chars)-1] != alphabets[len(chars)-1]:
-            if len(chars) == 1 and chars[0] != "a":
+            if len(chars) == 26 and chars[len(chars)-1] == "z":
+                await ctx.add_reaction("💯")
+                await ctx.channel.send(f"Noice !! {ctx.author.mention} Reached The End, There Are No More Letters. Start Again with **a**")
                 chars = []
 
-            else:
-                await ctx.channel.send(f"{ctx.author.mention} {alphabets[len(chars)-1]} Comes After {chars[len(chars)-2]} !! Start Again With **a**")
-                chars = []
+
+            if char[len(char)-1] == alphabets[len(chars)-1]:
+                await ctx.add_reaction("✅")
+
+            elif chars[len(chars)-1] != alphabets[len(chars)-1]:
+                if len(chars) == 1 and chars[0] != "a":
+                    chars = []
+
+                else:
+                    await ctx.channel.send(f"{ctx.author.mention} {alphabets[len(chars)-1]} Comes After {chars[len(chars)-2]} !! Start Again With **a**")
+                    chars = []
             
             
          
